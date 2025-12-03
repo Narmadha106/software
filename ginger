@@ -1,0 +1,94 @@
+package runner;
+
+import java.io.IOException;
+
+import org.openqa.selenium.By;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+
+import utils.Base;
+import utils.ExcelReader;
+import utils.LoggerHandler;
+import utils.Reporter;
+import utils.Screenshot;
+import utils.WebDriverHelper;
+
+public class TestRunner extends Base{
+    WebDriverHelper helper;
+    ExtentReports reports;
+    @BeforeTest
+    public void generateReport()
+    {
+        reports=Reporter.generateExtentReport("reports");
+
+    }
+    @BeforeMethod
+    public void launch(){
+        openBrowser();
+        helper=new WebDriverHelper(driver);
+    }
+    @Test
+    public void test01() throws IOException{
+        ExtentTest test=reports.createTest("test01");
+        LoggerHandler.info("test created");
+        helper.hoverOverElement(By.xpath("(//span[@class='h-full flex items-center text-base sm:text-[0.83vw] uppercase cursor-pointer'])[2]"));
+        helper.clickOnElement(By.xpath("//a[contains(text(),'About us')]"));
+        test.log(Status.PASS,"click on about us");
+    helper.clickOnElement(By.xpath("//a[contains(@href,'ginger')]"));
+    LoggerHandler.info("click on ginger");
+    helper.switchToNewWindow();
+    
+    helper.clickOnElement(By.xpath("//div[contains(text(),'Book')]"));
+    Screenshot.captureScreenShot("screenshot  of book stay");
+    Reporter.attachScreenshotToReport("ss1", test, "hiii");
+     
+    // String data=ExcelReader.readdata("./excel/excel.xlsx","Sheet1", 0, 0);
+    //     System.out.print(data);
+}  
+@Test
+public void test02()
+{
+    helper.hoverOverElement(By.xpath("//span[contains(text(),'Contact us')]"));
+    helper.clickOnElement(By.xpath("//span[contains(text(),'Contact us')]"));
+    ExtentTest test=reports.createTest("test02");
+
+    test.log(Status.PASS,"test executed");
+    Screenshot.captureScreenShot("contact_screenshot");
+    Reporter.attachScreenshotToReport("contact_screenshot", test, "ienfdedcl");
+    helper.javascriptScroll(By.name("firstname"));
+    helper.sendKeys(By.name("firstname"), "Mumbai");
+}   
+@Test
+public void test03()
+{
+    ExtentTest test=reports.createTest("test03");
+    helper.javascriptScroll(By.xpath("//a[contains(text(),'Privacy Policy')]"));
+    helper.clickOnElement(By.xpath("//a[contains(text(),'Privacy Policy')]"));
+    LoggerHandler.info("Scrolled");
+    helper.javascriptScroll(By.xpath("//div[@class='w-[210px] flex rounded-md bg-[#676668] p-[10px] justify-between cursor-pointer']"));
+    helper.clickOnElement(By.xpath("//div[@class='w-[210px] flex rounded-md bg-[#676668] p-[10px] justify-between cursor-pointer']"));
+
+    LoggerHandler.info("done");
+    LoggerHandler.info("hiii");
+    LoggerHandler.info("Scrolled");
+    LoggerHandler.info("done");
+    LoggerHandler.info("hiii");
+    LoggerHandler.info("Scrolled");
+    LoggerHandler.info("done");
+    LoggerHandler.info("hiii");
+}   
+    @AfterMethod
+    public void close()
+    {
+        reports.flush();
+        driver.quit();
+        
+    }
+}
