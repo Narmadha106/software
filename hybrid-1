@@ -1,0 +1,92 @@
+hybrid2 :   package runner;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+
+
+import utils.Base;
+import utils.LoggerHandler;
+import utils.Reporter;
+import utils.Screenshot;
+import utils.WebDriverHelper;
+
+public class TestSample extends Base{
+    WebDriverHelper helper;
+    ExtentReports reports;
+    @BeforeClass
+    public void firsttech()
+    {
+        reports=Reporter.generateExtentReport("reports");
+    }
+
+    @BeforeMethod
+    public void first()
+    {
+        openBrowser();
+        helper=new WebDriverHelper(driver);
+    }
+    @Test
+    public void test() throws MalformedURLException{
+        helper.clickOnElement(By.xpath("//button[@id='onetrust-pc-btn-handler']"));
+        for(int i=0;i<10;i++)
+        LoggerHandler.info("click on know more");
+
+        ExtentTest test=null;
+        for(int i=0;i<5;i++)
+        test= reports.createTest("hover on signin");
+    
+        WebElement privacy= driver.findElement(By.xpath("//h2[@id='ot-pc-title']"));
+        String text= privacy.getText();
+        Assert.assertEquals(text, "Privacy Preference Center");
+        Screenshot.captureScreenShot("file");
+        Reporter.attachScreenshotToReport("itchotel_screenshot", test, null);
+
+    }
+    @Test
+    public void test1() throws IOException{
+        helper.javascriptScroll(By.xpath("((//div[@class='accordion__content hide'])[5]//ul//li)[2]//a"));
+        helper.clickOnElement(By.xpath("(//a[contains(text(),'Gift Card')])[2]"));
+        helper.clickOnElement(By.linkText("Click here"));
+        helper.switchToNewWindow();
+        helper.clickOnElement(By.linkText("Sustainability"));
+        WebElement sus= driver.findElement(By.xpath("//div[@class='text cmp--itc-corporate--text cmp-itc-corporate--center-text']//div"));
+        String text1= sus.getText();
+        Assert.assertEquals(text1, "Sustainability at the Heart of Everything We Do");
+        Screenshot.captureScreenShot("file2");
+       }
+
+    @Test   
+    public void test2() throws IOException
+    {
+        helper.javascriptScroll(By.xpath("((//ul[@class='itc-footer__menu-listing'])[3]//ul//li)[1]"));
+        helper.clickOnElement(By.xpath("((//ul[@class='itc-footer__menu-listing'])[3]//ul//li)[1]"));
+        helper.clickOnElement(By.xpath("//button[@id='loginDropdownMenuButton']"));
+        helper.clickOnElement(By.xpath("(//span[@class='apply-casing'])[2]"));
+        helper.sendKeys(By.xpath("//input[@class='textField-element__text']"),"abcd@gmail.com");
+
+        helper.clickOnElement(By.xpath("//button[@class='cmp-button btn-prim-outline btn-rounded']"));
+    
+    }
+
+    @AfterMethod
+    public void after()
+    {
+        if (driver!=null)
+        {
+            reports.flush();
+            driver.quit();
+        }
+    }
+
+}
